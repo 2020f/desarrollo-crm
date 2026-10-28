@@ -116,6 +116,7 @@ builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<IWorkItemService, WorkItemService>();
 builder.Services.AddScoped<ITaskDiagramService, TaskDiagramService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<ILiveActivityService, LiveActivityService>();
 builder.Services.AddScoped<ITicketService, TicketService>();
 builder.Services.AddScoped<IChannelService, ChannelService>();
 builder.Services.AddScoped<IDocumentService, DocumentService>();

@@ -65,6 +65,8 @@ El módulo Mapa de tareas, sus contratos, reglas de concurrencia y demostración
 
 Las fechas de tareas, proyectos, épicas, ciclos, hitos y entregas se reflejan automáticamente en Calendario desde los registros originales. Reglas, permisos y validaciones en [docs/calendario-integrado.md](docs/calendario-integrado.md).
 
+Chat y notificaciones consultan automáticamente la actividad autorizada mientras el CRM está abierto, aproximadamente cada tres segundos, con avisos de sonido configurables por usuario y navegador. Comportamiento, contrato y validación local en [docs/chat-actualizacion-automatica.md](docs/chat-actualizacion-automatica.md).
+
 ```powershell
 dotnet test
 ```

@@ -3,6 +3,7 @@ import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { api, refreshCsrf, setUnauthorizedHandler } from './api';
 import type { CurrentUser } from './types';
 import Layout from './components/Layout';
+import { LiveActivityProvider } from './live/LiveActivityProvider';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import HomePage from './pages/HomePage';
@@ -44,7 +45,7 @@ function Protected({ children }: { children: ReactNode }) {
   const location = useLocation();
   if (loading) return <div className="empty">Cargando…</div>;
   if (!user?.isAuthenticated) return <Navigate to="/login" state={{ from: location }} replace />;
-  return <>{children}</>;
+  return <LiveActivityProvider userId={user.id} organizationId={user.organizationId}>{children}</LiveActivityProvider>;
 }
 
 export default function App() {

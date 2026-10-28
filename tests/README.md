@@ -88,6 +88,25 @@ Las siete pruebas DOM de autenticación y solicitudes comprueban registro cerrad
 
 GitHub Actions compila frontend/backend y ejecuta la batería contra un SQL Server Linux aislado. La contraseña de prueba se genera dentro de cada ejecución y no se guarda en el repositorio. Los comandos para probar instalación, respaldo y recuperación están en [DESPLIEGUE.md](../DESPLIEGUE.md).
 
+## Actualización automática de chat y sonidos
+
+Validación local del 28/10/2026: **145/145 pruebas de backend con los fixtures SQL Server reales**, **46/46 frontend**, **1/1 assets** y compilaciones .NET y TypeScript/Vite correctas. Vite mantiene el aviso previo de tamaño del fragmento principal. Dos sesiones reales de navegador verificaron intercambio en ambos sentidos sin recarga, borrador conservado, bandeja y contador automáticos, activación/silencio de audio y escritorio/móvil a 390 px sin desbordamiento. Recibo local sin credenciales: `.validation/live-chat-validation.json`. Estos resultados no acreditan un despliegue.
+
+`LiveActivityIntegrationTests` añade nueve casos SQL sobre el snapshot autorizado: mensajes propios/ajenos, última lectura sin modificarla, organizaciones y chats privados, revocación de cuentas/membresías/roles, mensajes borrados/hilos inválidos, edición de un mensaje anterior y muestra limitada con total exacto de avisos. También comprueba que un último mensaje propio no oculte la identidad del último entrante.
+
+`live-chat.test.cjs` usa componentes reales con HTTP/audio controlados para comprobar recepción sin recarga, conservación del borrador, respuestas tardías, envío pendiente, notificaciones, recuperación y deduplicación de sonidos. `sound.test.cjs` comprueba el adaptador de tonos y su ciclo de vida. Estas pruebas DOM no sustituyen dos sesiones reales de navegador ni confirman que un dispositivo emita audio audible.
+
+```powershell
+dotnet build Desarrollo.slnx --no-restore --verbosity minimal
+dotnet test Desarrollo.slnx --no-build --no-restore --logger 'trx;LogFileName=live-chat.trx' --results-directory .validation/results --verbosity minimal
+npm --prefix src/Desarrollo.Web/ClientApp run test:live
+npm --prefix src/Desarrollo.Web/ClientApp run test:frontend
+npm --prefix src/Desarrollo.Web/ClientApp run build
+npm --prefix src/Desarrollo.Web/ClientApp run test:assets
+```
+
+El recibo SQL local es `.validation/results/live-chat.trx`. El cambio no añade migraciones. Detalles y límites en [chat-actualizacion-automatica.md](../docs/chat-actualizacion-automatica.md). La batería completa también incluye los cambios anteriores de Carpetas, conservados por separado del alcance de esta función.
+
 ## Demo explícita para validar la interfaz
 
 Después de compilar backend y frontend:

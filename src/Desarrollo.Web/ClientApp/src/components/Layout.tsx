@@ -4,6 +4,7 @@ import { useAuth } from '../App';
 import { api } from '../api';
 import { initials } from '../constants';
 import { useNavigationGuard } from './NavigationGuard';
+import { useLiveActivity } from '../live/LiveActivityProvider';
 
 const NAV = [
   { to: '/', label: 'Inicio', icon: '⌂', end: true },
@@ -23,7 +24,7 @@ export default function Layout() {
   const navigate = useNavigate();
   const location = useLocation();
   const { saveBeforeLeaving, lockNavigation } = useNavigationGuard();
-  const [unread, setUnread] = useState(0);
+  const { unreadCount: unread, soundEnabled, soundReady, soundError, toggleSound, connected, accessLost } = useLiveActivity();
   const [loggingOut, setLoggingOut] = useState(false);
   const [logoutError, setLogoutError] = useState('');
   const loggingOutRef = useRef(false);
@@ -57,13 +58,6 @@ export default function Layout() {
       if (menuToggleRef.current?.isConnected) menuToggleRef.current.focus();
     };
   }, [mobileMenuOpen]);
-
-  useEffect(() => {
-    const fetch = () => api.get<{ count: number }>('/api/notifications/unread-count').then((r) => setUnread(r.count)).catch(() => {});
-    fetch();
-    const t = setInterval(fetch, 30000);
-    return () => clearInterval(t);
-  }, []);
 
   const logout = async () => {
     if (loggingOutRef.current) return;
@@ -128,11 +122,17 @@ export default function Layout() {
             <input className="input" placeholder="Buscar tareas, proyectos, tickets…" style={{ width: '100%' }} />
           </div>
           <button className="btn sm" onClick={() => navigate('/projects')}>+ Crear</button>
+          <button className="btn sm live-sound" data-sound-toggle onClick={() => void toggleSound()} aria-pressed={soundEnabled && soundReady}
+            title={soundEnabled && soundReady ? 'Silenciar avisos de mensajes y notificaciones' : 'Activar avisos de mensajes y notificaciones'}>
+            {soundEnabled && soundReady ? 'Sonido activado' : 'Activar sonido'}
+          </button>
           <button className="icon-btn" onClick={() => navigate('/notifications')} title="Notificaciones">
             🔔 {unread > 0 && <span className="dot-count">{unread}</span>}
           </button>
         </header>
         <main className="content">
+          {!connected && <div className="live-connection muted small" role="status">{accessLost ? 'Tu acceso cambió. Comprueba tu sesión antes de continuar.' : 'Conectando las actualizaciones automáticas. Si no hay conexión, se reintentará.'}</div>}
+          {soundError && <div className="alert error" role="alert">{soundError}</div>}
           {logoutError && <div className="alert error" role="alert">{logoutError}</div>}
           <Outlet />
         </main>

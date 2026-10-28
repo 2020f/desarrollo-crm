@@ -35,6 +35,8 @@ El menú **Carpetas**, ruta `/folders`, contiene dos opciones. La ruta anterior 
 
 Se puede seleccionar o arrastrar un archivo, escribir una descripción, buscar, paginar, copiar su código, descargar, ampliar imágenes y retirar los archivos propios. La retirada es lógica: se bloquean futuras lecturas, pero se conservan los bytes para recuperación administrativa. No hay purga automática de archivos originales.
 
+El botón de subida se habilita al seleccionar un archivo válido; en Pública también exige proyecto. Un aviso junto al botón explica qué falta, distingue la carga o el fallo de la lista de proyectos e indica cómo usar Privada sin proyecto. «Seleccionar archivo» solo se deshabilita mientras hay una carga en curso. Si una carga permanece pendiente, se puede cancelar desde el formulario.
+
 Cada archivo recibe un ID y un código estable `ARC-<GUID>`. El nombre físico usa identificadores generados de organización y archivo. SQL Server registra nombre original, tipo validado, tamaño, autor, audiencia, proyecto y ubicación interna. El código identifica el archivo; la audiencia registrada y los permisos actuales deciden el acceso. El navegador no recibe la ruta física.
 
 Los adjuntos anteriores mantienen la audiencia de su registro de origen (`Context`). Tareas, documentos, proyectos, tickets y mensajes se revalidan al consultar o descargar. Los archivos antiguos sin vínculos solo se recuperan para su autor. Añadir un vínculo no convierte automáticamente un archivo privado en público.
@@ -91,6 +93,8 @@ La migración `20261027222955_DocumentFileVisibility` añade columnas, índices 
 Esta actualización cubre formato, audiencia y almacenamiento solicitados. La matriz general mantiene como pendientes otras capacidades de `crm.md`: comentarios y menciones de documentos, favoritos, búsqueda global de contenido, tablas del editor, imágenes dentro de las notas, restauración de versiones desde la interfaz, autoguardado periódico, versiones de archivos, cuotas agregadas y análisis antivirus. No se presentan como implementadas.
 
 ## Validación local
+
+Revisión del 28 de octubre de 2026 del botón de subida: `node --test tests/frontend/files.test.cjs`, **7/7** correctas, incluyendo instalación sin proyectos, habilitación de Privada tras seleccionar archivo y reintento de proyectos después de un fallo. `npm --prefix src/Desarrollo.Web/ClientApp run build` correcto, con el aviso existente de tamaño del fragmento principal. Estas pruebas de interfaz usan API simulada. En la instalación publicada se comprobó además que Pública no tiene proyectos disponibles y que seleccionar un TXT de diagnóstico de 50 bytes habilita Privada; la subida terminó correctamente y el archivo se retiró al terminar. Captura local: `.validation/upload-private-published.png`. El usuario indicó TXT de 35 bytes: una segunda selección de un TXT de exactamente 35 bytes también habilitó el botón en Privada, sin volver a subirlo. Captura: `.validation/upload-txt35-enabled-published.png`. El usuario confirmó que la subida pública funcionó tras crear y seleccionar el proyecto. El TXT de 35 bytes era válido. Los avisos nuevos se incluyen en el código; la instalación publicada debe actualizarse para mostrarlos.
 
 - `dotnet build Desarrollo.slnx --no-restore --verbosity minimal`: 0 errores y 0 advertencias.
 - Batería SQL Server real: **80/80** correctas; incluye 17 casos de documentos y avisos, 15 de archivos/disco y las 48 regresiones anteriores. Resultado local: `.validation/results/documents-files.trx`.

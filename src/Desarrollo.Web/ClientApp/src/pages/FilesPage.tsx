@@ -28,6 +28,7 @@ export default function FilesPage() {
   const [error, setError] = useState('');
   const [uploadError, setUploadError] = useState('');
   const [projectError, setProjectError] = useState('');
+  const [loadingProjects, setLoadingProjects] = useState(true);
   const [message, setMessage] = useState('');
   const [preview, setPreview] = useState<StoredFileDto | null>(null);
   const [previewError, setPreviewError] = useState(false);
@@ -38,10 +39,12 @@ export default function FilesPage() {
 
   useEffect(() => { mounted.current = true; return () => { mounted.current = false; sequence.current++; uploadController.current?.abort(); }; }, []);
   const loadProjects = useCallback(async () => {
+    setLoadingProjects(true);
     try {
       const response = await api.get<Paged<ProjectDto>>('/api/projects?pageSize=200');
       if (mounted.current) { setProjects(response.items); setProjectId((current) => current || response.items[0]?.id || ''); setProjectError(''); }
     } catch (failure) { if (mounted.current) setProjectError((failure as Error).message); }
+    finally { if (mounted.current) setLoadingProjects(false); }
   }, []);
   useEffect(() => { void loadProjects(); }, [loadProjects]);
   useEffect(() => { const timer = setTimeout(() => { setQuery(search.trim()); setPage(1); }, 250); return () => clearTimeout(timer); }, [search]);
@@ -113,6 +116,13 @@ export default function FilesPage() {
     catch { setError('No se pudo copiar el código. Puedes seleccionarlo y copiarlo manualmente.'); }
   };
   const pages = Math.max(1, Math.ceil(result.total / result.pageSize));
+  const uploadHint = uploading ? 'La carga está en curso. Puedes cancelarla si necesitas seleccionar otro archivo.'
+    : visibility === 'Public' && !projectId
+      ? loadingProjects ? 'Cargando proyectos. Selecciona un archivo mientras esperas.'
+        : projectError ? 'Reintenta cargar los proyectos para subir a la carpeta pública, o cambia a Privada para subir sin proyecto.'
+          : projects.length === 0 ? 'No tienes proyectos disponibles. Crea un proyecto o solicita acceso a uno para compartir archivos. También puedes cambiar a Privada y subir sin proyecto.'
+            : 'Selecciona un proyecto para habilitar la carga a la carpeta pública.'
+      : !selected ? 'Selecciona un archivo o arrástralo aquí para habilitar el botón de subida.' : '';
   return <div className="folders-page">
     <div className="row folders-header"><div><h1 className="page-title">Carpetas</h1><p className="muted small">Archivos compartidos por proyecto y tus archivos privados.</p></div><span className="grow" /><button className="btn" disabled={loading || uploading} onClick={() => void load()}>Actualizar</button></div>
     <div className="folder-tabs" role="tablist" aria-label="Visibilidad de la carpeta">{(['Public', 'Private'] as const).map((value) => <button key={value} role="tab" aria-selected={visibility === value} aria-controls="folder-content" className={'folder-tab' + (visibility === value ? ' active' : '')} disabled={uploading} onClick={() => { setVisibility(value); setPage(1); setError(''); setMessage(''); }}>{value === 'Public' ? 'Pública' : 'Privada'}</button>)}</div>
@@ -125,7 +135,8 @@ export default function FilesPage() {
       <div><strong>Subir archivo</strong><p className="muted small">Arrastra un archivo o selecciónalo. Máximo 50 MB.</p><input ref={fileInput} type="file" aria-label="Seleccionar archivo" accept={ACCEPT} disabled={uploading} onChange={(event) => choose(event.target.files?.[0])} /></div>
       {selected && <div className="folder-selected"><strong>{selected.name}</strong><span className="muted small">{fileSize(selected.size)}</span><button type="button" className="btn sm" disabled={uploading} onClick={() => { setSelected(null); if (fileInput.current) fileInput.current.value = ''; }}>Quitar selección</button></div>}
       <label>Descripción (opcional)<input className="input" aria-label="Descripción del archivo" value={description} disabled={uploading} maxLength={2000} onChange={(event) => setDescription(event.target.value)} /></label>
-      <div className="row"><span className="muted small">Imágenes, PDF, TXT, Markdown, CSV, ZIP y documentos de Office.</span><span className="grow" />{uploading && <button type="button" className="btn" onClick={() => uploadController.current?.abort()}>Cancelar carga</button>}<button className="btn primary" disabled={uploading || !selected || (visibility === 'Public' && !projectId)}>{uploading ? 'Subiendo archivo…' : 'Subir a carpeta ' + (visibility === 'Public' ? 'pública' : 'privada')}</button></div>
+      <div className="row"><span className="muted small">Imágenes, PDF, TXT, Markdown, CSV, ZIP y documentos de Office.</span><span className="grow" />{uploading && <button type="button" className="btn" onClick={() => uploadController.current?.abort()}>Cancelar carga</button>}<button className="btn primary" aria-describedby={uploadHint ? 'folder-upload-hint' : undefined} disabled={uploading || !selected || (visibility === 'Public' && !projectId)}>{uploading ? 'Subiendo archivo…' : 'Subir a carpeta ' + (visibility === 'Public' ? 'pública' : 'privada')}</button></div>
+      {uploadHint && <div id="folder-upload-hint" className="muted small">{uploadHint}</div>}
       {uploadError && <div className="alert error" role="alert">{uploadError}</div>}
     </form>
     {message && <div className="alert success" role="status">{message}</div>}

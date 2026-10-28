@@ -11,7 +11,8 @@
     "test:content": "node --test ../../../tests/frontend/documents.test.cjs ../../../tests/frontend/files.test.cjs",
     "test:assets": "node --test ../../../tests/frontend/assets.test.cjs",
     "test:security": "node --test ../../../tests/frontend/auth-deployment.test.cjs ../../../tests/frontend/ticket-security-ui.test.cjs",
-    "test:frontend": "node --test ../../../tests/frontend/auth-deployment.test.cjs ../../../tests/frontend/calendar.test.cjs ../../../tests/frontend/diagram-selection.test.cjs ../../../tests/frontend/documents.test.cjs ../../../tests/frontend/files.test.cjs ../../../tests/frontend/logout-lock.test.cjs ../../../tests/frontend/mobile-navigation.test.cjs ../../../tests/frontend/navigation-guard.test.cjs ../../../tests/frontend/task-editor-date.test.cjs ../../../tests/frontend/ticket-security-ui.test.cjs",
+    "test:frontend": "node --test ../../../tests/frontend/auth-deployment.test.cjs ../../../tests/frontend/calendar.test.cjs ../../../tests/frontend/diagram-selection.test.cjs ../../../tests/frontend/documents.test.cjs ../../../tests/frontend/files.test.cjs ../../../tests/frontend/live-chat.test.cjs ../../../tests/frontend/sound.test.cjs ../../../tests/frontend/logout-lock.test.cjs ../../../tests/frontend/mobile-navigation.test.cjs ../../../tests/frontend/navigation-guard.test.cjs ../../../tests/frontend/task-editor-date.test.cjs ../../../tests/frontend/ticket-security-ui.test.cjs",
+    "test:live": "node --test ../../../tests/frontend/live-chat.test.cjs ../../../tests/frontend/sound.test.cjs",
     "preview": "vite preview"
   },
   "dependencies": {

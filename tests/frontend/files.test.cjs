@@ -62,6 +62,49 @@ test('Public folder is scoped to project, private folder omits project; search a
   } finally { await close(); }
 });
 
+test('A new installation explains public upload requirements and allows private upload without projects', { timeout: 15000 }, async () => {
+  reset(); const get = api.get;
+  api.get = async (url) => url.startsWith('/api/projects?') ? { items: [] } : get(url);
+  const close = await mount();
+  try {
+    assert.equal(byText('Subir a carpeta pública').disabled, true);
+    assert.match(document.querySelector('#folder-upload-hint').textContent, /No tienes proyectos disponibles/);
+    assert.equal(byText('Subir a carpeta pública').getAttribute('aria-describedby'), 'folder-upload-hint');
+    assert.equal(document.querySelector('input[type="file"]').disabled, false);
+    await flush(() => choose(new window.File(['Notas'], 'notas.txt', { type: 'text/plain' })));
+    assert.equal(byText('Subir a carpeta pública').disabled, true);
+    await flush(() => byText('Privada').click());
+    assert.equal(byText('Subir a carpeta privada').disabled, false);
+    assert.equal(document.querySelector('#folder-upload-hint'), null);
+    await flush(() => byText('Subir a carpeta privada').click());
+    assert.equal(uploads.length, 1);
+    assert.equal(uploads[0].body.get('visibility'), 'Private');
+    assert.equal(uploads[0].body.has('projectId'), false);
+    assert.equal(byText('Subir a carpeta privada').disabled, true);
+    assert.match(document.querySelector('#folder-upload-hint').textContent, /Selecciona un archivo/);
+  } finally { await close(); }
+});
+
+test('Failed project loading explains how to retry while private selection still enables upload', { timeout: 15000 }, async () => {
+  reset(); const get = api.get;
+  api.get = async (url) => { if (url.startsWith('/api/projects?')) throw new Error('Sin conexión'); return get(url); };
+  const close = await mount();
+  try {
+    assert.match(document.querySelector('#folder-upload-hint').textContent, /Reintenta cargar los proyectos/);
+    await flush(() => byText('Privada').click());
+    assert.match(document.querySelector('#folder-upload-hint').textContent, /Selecciona un archivo/);
+    assert.equal(byText('Subir a carpeta privada').disabled, true);
+    await flush(() => choose(new window.File(['Notas'], 'notas.md', { type: 'text/markdown' })));
+    assert.equal(byText('Subir a carpeta privada').disabled, false);
+    await flush(() => byText('Pública').click());
+    assert.equal(byText('Subir a carpeta pública').disabled, true);
+    api.get = get;
+    await flush(() => byText('Reintentar proyectos').click());
+    assert.equal(byText('Subir a carpeta pública').disabled, false);
+    assert.equal(document.querySelector('#folder-upload-hint'), null);
+  } finally { await close(); }
+});
+
 test('Chooser rejects SVG/oversize/empty files, uploads multipart and preserves selection after failure', { timeout: 15000 }, async () => {
   reset(); const close = await mount();
   try {

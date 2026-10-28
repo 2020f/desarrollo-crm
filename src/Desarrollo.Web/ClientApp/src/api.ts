@@ -51,7 +51,7 @@ async function request<T>(url: string, init: RequestInit = {}): Promise<T> {
 }
 
 export const api = {
-  get: <T>(url: string) => request<T>(url),
+  get: <T>(url: string, signal?: AbortSignal) => request<T>(url, { signal }),
   post: <T>(url: string, body?: unknown) => request<T>(url, { method: 'POST', body: body === undefined ? undefined : JSON.stringify(body) }),
   upload: <T>(url: string, body: FormData, signal?: AbortSignal) => request<T>(url, { method: 'POST', body, signal }),
   put: <T>(url: string, body?: unknown) => request<T>(url, { method: 'PUT', body: body === undefined ? undefined : JSON.stringify(body) }),
