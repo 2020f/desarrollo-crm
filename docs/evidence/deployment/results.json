@@ -1,0 +1,92 @@
+{
+  "Kind": "LinuxDockerDeploymentRehearsal",
+  "Date": "2026-10-28",
+  "Status": "Passed",
+  "Platform": "Docker Desktop Linux containers; isolated docker:cli helper; SQL Server Express 2025",
+  "ProductionDeployment": false,
+  "UbuntuHostDeploymentVerified": false,
+  "CloudflareTunnelVerified": false,
+  "BackupRestoreImageId": "f11e4f4e7c6e4f908962441b0784b89af6edc3aa3b5f24aeb23d0dabcd224c45",
+  "FinalProxyImageId": "sha256:78ed740c22117eb3fbc1b5338574432070ec398f0bdcfee58029a52d565b85fc",
+  "Scope": "Installation and complete SQL/files/keys recovery passed before the final proxy-only middleware change; the rebuilt final image passed secure-proxy, CSRF login and authenticated-read probes separately.",
+  "InstallationRecoveryChecks": {
+    "ProductionRegistrationClosed": true,
+    "RegistrationPost403": true,
+    "EmptyDatabaseBootstrap": true,
+    "RepeatedBootstrapDenied": true,
+    "RuntimeProjectCreate": true,
+    "PrivateDocumentCreate": true,
+    "OriginalFileHashes": true,
+    "RuntimeDmlWithoutDdl": true,
+    "ActualCreateTableDenied": true,
+    "ConsistentBackup": true,
+    "SqlChecksumVerify": true,
+    "FullSqlFilesKeysRestore": true,
+    "DbccCheckDb": true,
+    "StorageOverwriteDenied": true,
+    "ExistingDatabaseOverwriteDenied": true,
+    "RestoredOriginalCookie": true,
+    "RestoredDocument": true,
+    "RestoredFileHashes": true,
+    "RestoredFileAudiences": true
+  },
+  "SecureProxy": {
+    "Status": "Passed",
+    "BridgeGateway": "172.20.0.1",
+    "ObservedTrustedPeer": "172.20.0.1",
+    "AntiforgeryStatus": 200,
+    "SecureAntiforgeryCookie": true,
+    "SecureLoginCookie": true,
+    "CsrfProtectedLogin": true,
+    "AuthenticatedRead": true,
+    "PlainHttpTokenBlocked": 500,
+    "UntrustedProxyTokenBlocked": 500,
+    "NoMaintenanceSecretsInWeb": true,
+    "ProductionDeployment": false
+  },
+  "TemporaryContainersStopped": true,
+  "HelperWithDockerSocketStopped": true,
+  "TestDataVolumesPreserved": true,
+  "FinalSourceWorkingFileHashes": [
+    {
+      "Path": "src/Desarrollo.Web/Program.cs",
+      "Sha256": "49E1096E8612C0DA6DE0067AD5F175661DB44C9F8089EC8C2CDD6884A5A18BE8"
+    },
+    {
+      "Path": "src/Desarrollo.Web/Services/ReverseProxyConfiguration.cs",
+      "Sha256": "5E28A6BAD31F8574509E42205ACC7EFCDEAE88B93B0A7AF636E56925404D5408"
+    },
+    {
+      "Path": "compose.yaml",
+      "Sha256": "DCBAB40D88C145CD198EC51F6EA5651FC6CB1AEBE70392DDFC41B6FEEEBB8A9C"
+    },
+    {
+      "Path": "scripts/deploy/common.sh",
+      "Sha256": "6EF26FABC534454AC97F085E40A40EF2DE1AA0D150F30A9ED46241262247EE90"
+    },
+    {
+      "Path": "scripts/deploy/backup.sh",
+      "Sha256": "779C022E73D6286D043BA72B941901E0596382A627A29A6BFCB85F54BA0A7994"
+    },
+    {
+      "Path": "scripts/deploy/restore.sh",
+      "Sha256": "4EFF8DCCD02A9CCDF3B3D06E41A94D522600F3D0A4CD14A4C79AF3DB2FEC3A38"
+    },
+    {
+      "Path": "scripts/deploy/archive.py",
+      "Sha256": "81E55D69DBC9987DB5C9FCBA218A97D6CA01FE2E00CB8E6599EEB589D4702C3F"
+    },
+    {
+      "Path": "scripts/deploy/sql-init.sh",
+      "Sha256": "39769CAA2694A58C8765F5E3787D3CDBCC63B37D7495DC4E466690934C57E5CC"
+    },
+    {
+      "Path": "scripts/deploy/initialize-runtime.sql",
+      "Sha256": "8E55D4542EBFE02E480629578C4673BF9BD595985390064FEC2C6C12B8E95DF4"
+    },
+    {
+      "Path": "scripts/deploy/create-env.py",
+      "Sha256": "E36BDDA6A2A8AAD1FABF1712450E4DF9CBAE568928FE1E58A7D4FF3F2A366AE0"
+    }
+  ]
+}

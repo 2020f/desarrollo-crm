@@ -1,0 +1,57 @@
+name: Validate CRM
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: src/Desarrollo.Web/ClientApp/package-lock.json
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          dotnet-version: '10.0.x'
+      - name: Start isolated SQL Server
+        shell: bash
+        run: |
+          set -euo pipefail
+          ci_password="$(openssl rand -hex 24)Aa1!"
+          echo "::add-mask::$ci_password"
+          echo "DESARROLLO_TEST_CONNECTION_STRING=Server=localhost,1433;User ID=sa;Password=$ci_password;TrustServerCertificate=True;Encrypt=True" >> "$GITHUB_ENV"
+          docker run -d --name crm-ci-sql -e ACCEPT_EULA=Y -e MSSQL_PID=Developer -e MSSQL_SA_PASSWORD="$ci_password" -p 127.0.0.1:1433:1433 mcr.microsoft.com/mssql/server:2025-latest
+          for attempt in $(seq 1 90); do
+            if docker exec crm-ci-sql bash -c 'SQLCMDPASSWORD="$MSSQL_SA_PASSWORD" /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -C -Q "SELECT 1" -b -o /dev/null'; then exit 0; fi
+            sleep 2
+          done
+          exit 1
+      - name: Frontend
+        run: |
+          npm ci --prefix src/Desarrollo.Web/ClientApp
+          npm --prefix src/Desarrollo.Web/ClientApp run test:frontend
+          npm --prefix src/Desarrollo.Web/ClientApp run build
+          npm --prefix src/Desarrollo.Web/ClientApp run test:assets
+      - name: Backend and real SQL Server integration
+        run: |
+          dotnet restore Desarrollo.slnx
+          dotnet build Desarrollo.slnx --no-restore --configuration Release --verbosity minimal
+          dotnet test Desarrollo.slnx --no-build --no-restore --configuration Release --logger 'trx;LogFileName=crm.trx' --results-directory TestResults --verbosity minimal
+      - name: Test results
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: sql-test-results
+          path: TestResults/*.trx
+          retention-days: 7
+          if-no-files-found: ignore
+      - name: Stop isolated SQL Server
+        if: always()
+        run: docker rm -f crm-ci-sql || true

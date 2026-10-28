@@ -1,0 +1,50 @@
+{
+  "checkedAt": "2026-10-27T05:15:21.728Z",
+  "environment": "demo acceptance aislada; zona America/Santo_Domingo; SQL Server real",
+  "checks": [
+    {
+      "check": "Vencimiento guardado con control nativo aparece automáticamente en Mes el 29 de octubre",
+      "passed": true
+    },
+    {
+      "check": "Semana muestra tarea con vencimiento en banda Todo el día del 29",
+      "passed": true
+    },
+    {
+      "check": "Día 29 muestra el vencimiento como Todo el día",
+      "passed": true
+    },
+    {
+      "check": "Agenda muestra origen Tarea, vencimiento y fecha 29 sin duplicados",
+      "passed": true
+    },
+    {
+      "check": "Pulsar fecha derivada abre ficha original y no editor de evento",
+      "passed": true
+    },
+    {
+      "check": "Cambiar vencimiento29→30 mueve la única entrada y elimina la fecha anterior",
+      "passed": true
+    },
+    {
+      "check": "Quitar vencimiento desde editor elimina la proyección del calendario",
+      "passed": true
+    },
+    {
+      "check": "Evento manual de todo el día conserva 29 como inicio y último día incluidos, sin aparecer el 30",
+      "passed": true
+    },
+    {
+      "check": "Reunión manual con hora se muestra el29 de09:00a10:00 en SantoDomingo",
+      "passed": true
+    },
+    {
+      "check": "Filtro origen/proyecto distingue eventos manuales de tareas; fin exclusivo no agrega día30",
+      "passed": true
+    },
+    {
+      "check": "Agenda móvil390px conserva títulos, origen y fechas sin desborde global",
+      "passed": true
+    }
+  ]
+}

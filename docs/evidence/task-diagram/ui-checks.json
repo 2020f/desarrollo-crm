@@ -1,0 +1,59 @@
+{
+  "checkedAt": "2026-10-27T03:21:59.934Z",
+  "environment": "demo acceptance aislada, SQL Server real",
+  "checks": [
+    {
+      "check": "Filtro Urgente conserva Totales, Carrito y raíz como contexto",
+      "passed": true
+    },
+    {
+      "check": "Contraer y expandir recupera las 5 tarjetas",
+      "passed": true
+    },
+    {
+      "check": "Creación hija desde Carrito y desde subtarea, con nota larga; creación raíz independiente",
+      "passed": true
+    },
+    {
+      "check": "Estado cambiado desde Lista aparece en Tablero y ficha del mismo CMP-02",
+      "passed": true
+    },
+    {
+      "check": "Conflicto 409 conserva borrador, permite comparación/reintento y renombrar madre actualiza títulos de hijas",
+      "passed": true
+    },
+    {
+      "check": "Archivado y restauración explícitos de rama CMP-08/CMP-09 con alcance de 2 tarjetas",
+      "passed": true
+    },
+    {
+      "check": "Corrección: nueva raíz CMP-10 queda seleccionada y centrada",
+      "passed": true
+    },
+    {
+      "check": "Arrastre mantiene 8 conexiones y posición/cámara se recuperan idénticas tras Lista → Diagrama",
+      "passed": true
+    },
+    {
+      "check": "Servidor detenido: error de guardado conserva íntegro el borrador",
+      "passed": true
+    },
+    {
+      "check": "Servidor detenido: sidebar, atrás y logout conservan mapa y posiciones pendientes tras resolver navegación",
+      "passed": true
+    },
+    {
+      "check": "Reanudar servidor y reintentar navegación persiste el movimiento pendiente sin perder datos",
+      "passed": true,
+      "position": "z-index: 0; transform: translate(583.333px, 1739.67px); pointer-events: all; visibility: visible;"
+    },
+    {
+      "check": "Móvil390: canvas348px sin desborde; menú con Escape/navegación y Lista accesible",
+      "passed": true
+    },
+    {
+      "check": "Nueva hija CMP-11 seleccionada y centrada; editor móvil390px, foco cíclico y Escape funcionales",
+      "passed": true
+    }
+  ]
+}

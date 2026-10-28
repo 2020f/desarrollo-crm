@@ -1,0 +1,13 @@
+.git
+.validation
+docs/evidence
+**/node_modules
+**/bin
+**/obj
+**/tsconfig.tsbuildinfo
+src/Desarrollo.Web/wwwroot/dist
+src/Desarrollo.Web/App_Data
+**/*.log
+.env
+.env.*
+!.env.docker.example

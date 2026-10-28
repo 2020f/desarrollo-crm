@@ -1,0 +1,97 @@
+name: ${CRM_COMPOSE_PROJECT:-desarrollo-crm}
+
+x-app-environment: &app-environment
+  ASPNETCORE_ENVIRONMENT: Production
+  ConnectionStrings__Default: "Server=sql;Database=${CRM_SQL_DATABASE:-Desarrollo};User Id=${CRM_SQL_RUNTIME_USER:-crm_runtime};Password=${CRM_SQL_RUNTIME_PASSWORD:?Set CRM_SQL_RUNTIME_PASSWORD in a private environment file};TrustServerCertificate=True;Encrypt=True"
+  Database__ApplyMigrationsOnStartup: "false"
+  App__AllowRegistration: "false"
+  App__RequireSecureCookies: ${CRM_SECURE_COOKIES:-true}
+  ReverseProxy__KnownProxies__0: ${CRM_TRUSTED_PROXY_IP:-}
+  Storage__RootPath: /var/lib/crm/files
+  DataProtection__KeyRingPath: /var/lib/crm/keys
+
+x-app: &app
+  build: .
+  image: ${CRM_IMAGE:-desarrollo-crm:local}
+  volumes:
+    - type: bind
+      source: ${CRM_DATA_DIR:?Set CRM_DATA_DIR to an absolute persistent folder}/files
+      target: /var/lib/crm/files
+      bind:
+        create_host_path: false
+    - type: bind
+      source: ${CRM_DATA_DIR:?Set CRM_DATA_DIR to an absolute persistent folder}/keys
+      target: /var/lib/crm/keys
+      bind:
+        create_host_path: false
+  depends_on:
+    sql:
+      condition: service_healthy
+
+services:
+  sql:
+    image: mcr.microsoft.com/mssql/server:2025-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: ${CRM_SQL_EDITION:-Express}
+      MSSQL_SA_PASSWORD: ${CRM_SQL_PASSWORD:?Set CRM_SQL_PASSWORD in a private environment file}
+    volumes:
+      - sql-data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "SQLCMDPASSWORD=\"$$MSSQL_SA_PASSWORD\" /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -C -Q 'SELECT 1' -b -o /dev/null"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+    restart: unless-stopped
+  web:
+    <<: *app
+    environment:
+      <<: *app-environment
+    ports:
+      - "127.0.0.1:${CRM_HTTP_PORT:-5080}:8080"
+    restart: unless-stopped
+  migrate:
+    <<: *app
+    profiles: [maintenance]
+    environment:
+      <<: *app-environment
+      ConnectionStrings__Maintenance: "Server=sql;Database=${CRM_SQL_DATABASE:-Desarrollo};User Id=sa;Password=${CRM_SQL_PASSWORD:?Set CRM_SQL_PASSWORD in a private environment file};TrustServerCertificate=True;Encrypt=True"
+    command: [--migrate-only]
+  sql-init:
+    image: mcr.microsoft.com/mssql/server:2025-latest
+    profiles: [maintenance]
+    entrypoint: [bash, /opt/crm/sql-init.sh]
+    environment:
+      CRM_SQL_PASSWORD: ${CRM_SQL_PASSWORD:?Set CRM_SQL_PASSWORD in a private environment file}
+      CRM_SQL_RUNTIME_PASSWORD: ${CRM_SQL_RUNTIME_PASSWORD:?Set CRM_SQL_RUNTIME_PASSWORD in a private environment file}
+      CRM_SQL_RUNTIME_USER: ${CRM_SQL_RUNTIME_USER:-crm_runtime}
+      CRM_SQL_DATABASE: ${CRM_SQL_DATABASE:-Desarrollo}
+    volumes:
+      - type: bind
+        source: ./scripts/deploy/sql-init.sh
+        target: /opt/crm/sql-init.sh
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: bind
+        source: ./scripts/deploy/initialize-runtime.sql
+        target: /opt/crm/initialize-runtime.sql
+        read_only: true
+        bind:
+          create_host_path: false
+    depends_on:
+      sql:
+        condition: service_healthy
+  bootstrap:
+    <<: *app
+    profiles: [maintenance]
+    environment:
+      <<: *app-environment
+      Bootstrap__Email: ${CRM_BOOTSTRAP_EMAIL:-}
+      Bootstrap__Password: ${CRM_BOOTSTRAP_PASSWORD:-}
+      Bootstrap__FullName: ${CRM_BOOTSTRAP_FULL_NAME:-}
+      Bootstrap__OrganizationName: ${CRM_BOOTSTRAP_ORGANIZATION_NAME:-}
+    command: [--bootstrap-admin-only]
+volumes:
+  sql-data:

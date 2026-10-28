@@ -1,0 +1,93 @@
+{
+  "environment": "Isolated acceptance database, http://127.0.0.1:5021",
+  "date": "2026-10-27",
+  "checks": [
+    {
+      "name": "Rich format, checklist and selected audience survive reload",
+      "passed": true,
+      "proof": {
+        "bold": 4,
+        "checks": 2,
+        "completed": 1,
+        "h2": "Acuerdos del equipo"
+      }
+    },
+    {
+      "name": "New documents default to private",
+      "passed": true,
+      "proof": {
+        "checkedProperty": true
+      }
+    },
+    {
+      "name": "Private PNG upload, unique code and authenticated thumbnail",
+      "passed": true,
+      "proof": {
+        "loaded": true,
+        "width": 1
+      }
+    },
+    {
+      "name": "Public Markdown download preserves original bytes",
+      "passed": true,
+      "bytes": 65
+    },
+    {
+      "name": "Folder search and empty state",
+      "passed": true
+    },
+    {
+      "name": "SVG selection rejected before upload",
+      "passed": true
+    },
+    {
+      "name": "Selected reader sees shared/public notes but no private note",
+      "passed": true
+    },
+    {
+      "name": "Reader cannot edit the shared note",
+      "passed": true
+    },
+    {
+      "name": "Project reader sees and can download public file",
+      "passed": true
+    },
+    {
+      "name": "Other user private folder excludes the owner image",
+      "passed": true
+    },
+    {
+      "name": "Direct private download URL denied to project reader",
+      "passed": true
+    },
+    {
+      "name": "Checklist checkbox and text use the same row",
+      "passed": true,
+      "proof": {
+        "display": "flex"
+      }
+    },
+    {
+      "name": "Documents mobile at 390px without horizontal overflow",
+      "passed": true,
+      "proof": {
+        "document": 390,
+        "main": 380,
+        "viewport": 390
+      }
+    },
+    {
+      "name": "Folders mobile at 390px without horizontal overflow",
+      "passed": true,
+      "proof": {
+        "document": 390,
+        "main": 380,
+        "viewport": 390
+      }
+    },
+    {
+      "name": "Author can change project audience to selected people and persist it",
+      "passed": true
+    }
+  ]
+}

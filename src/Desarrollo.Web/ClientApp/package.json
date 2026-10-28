@@ -1,0 +1,38 @@
+{
+  "name": "desarrollo-web",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "test:diagram": "node --test ../../../tests/frontend/diagram-selection.test.cjs ../../../tests/frontend/navigation-guard.test.cjs ../../../tests/frontend/logout-lock.test.cjs ../../../tests/frontend/mobile-navigation.test.cjs",
+    "test:calendar": "node --test ../../../tests/frontend/calendar.test.cjs ../../../tests/frontend/task-editor-date.test.cjs",
+    "test:content": "node --test ../../../tests/frontend/documents.test.cjs ../../../tests/frontend/files.test.cjs",
+    "test:assets": "node --test ../../../tests/frontend/assets.test.cjs",
+    "test:security": "node --test ../../../tests/frontend/auth-deployment.test.cjs ../../../tests/frontend/ticket-security-ui.test.cjs",
+    "test:frontend": "node --test ../../../tests/frontend/auth-deployment.test.cjs ../../../tests/frontend/calendar.test.cjs ../../../tests/frontend/diagram-selection.test.cjs ../../../tests/frontend/documents.test.cjs ../../../tests/frontend/files.test.cjs ../../../tests/frontend/logout-lock.test.cjs ../../../tests/frontend/mobile-navigation.test.cjs ../../../tests/frontend/navigation-guard.test.cjs ../../../tests/frontend/task-editor-date.test.cjs ../../../tests/frontend/ticket-security-ui.test.cjs",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@tiptap/core": "3.32.0",
+    "@tiptap/extension-task-item": "3.32.0",
+    "@tiptap/extension-task-list": "3.32.0",
+    "@tiptap/extension-text-align": "3.32.0",
+    "@tiptap/pm": "3.32.0",
+    "@tiptap/react": "3.32.0",
+    "@tiptap/starter-kit": "3.32.0",
+    "@xyflow/react": "^12.12.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.28.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.3",
+    "jsdom": "26.1.0",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.10"
+  }
+}

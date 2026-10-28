@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-28",
+  "timezone": "America/Santo_Domingo",
+  "scope": "Predeployment security and installation preparation; the complete CRM specification remains partially implemented.",
+  "backend": {
+    "database": "Real local SQL Server; isolated Desarrollo_Test_<GUID> fixtures; also includes non-database safety and reverse-proxy tests",
+    "buildCommand": "dotnet build Desarrollo.slnx --no-restore --verbosity minimal",
+    "buildErrors": 0,
+    "buildWarnings": 0,
+    "testCommand": "dotnet test Desarrollo.slnx --no-build --no-restore --logger \"trx;LogFileName=predeployment.trx\" --results-directory .validation/results --verbosity minimal",
+    "passed": 136,
+    "reverseProxyAndAntiforgeryCases": 10,
+    "failed": 0,
+    "skipped": 0,
+    "localReceipt": ".validation/results/predeployment.trx"
+  },
+  "frontend": {
+    "testCommand": "npm --prefix src/Desarrollo.Web/ClientApp run test:frontend",
+    "passed": 26,
+    "failed": 0,
+    "skipped": 0,
+    "buildCommand": "npm --prefix src/Desarrollo.Web/ClientApp run build",
+    "buildPassed": true,
+    "assetsCommand": "npm --prefix src/Desarrollo.Web/ClientApp run test:assets",
+    "assetsPassed": 1,
+    "limitations": ["DOM tests use controlled API adapters.", "Vite warns about the main bundle size; this is not a measured performance result."]
+  },
+  "localDataPreservation": {
+    "normalAndPrimaryDemoRestarted": true,
+    "tablesCompared": 104,
+    "originalFileHashesCompared": 2,
+    "unchanged": true,
+    "localReceipts": [".validation/publication-reload.json", ".validation/publication-data-check.json"]
+  },
+  "dockerDeploymentEvidence": "../deployment/results.json",
+  "production": {
+    "ubuntuHostDeployed": false,
+    "cloudflareTunnelPublished": false,
+    "performanceTargetsMeasured": false
+  }
+}

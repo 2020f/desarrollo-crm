@@ -1,0 +1,38 @@
+.folders-header { flex-wrap: wrap; margin-bottom: 18px; }
+.folders-header .page-title { margin: 0 0 6px; }
+.folders-header p { margin: 0; }
+.folder-tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 18px; gap: 8px; }
+.folder-tab { border: 1px solid transparent; border-bottom: 0; border-radius: 10px 10px 0 0; background: transparent; color: var(--text-2); padding: 12px 24px; font-weight: 600; }
+.folder-tab.active { background: var(--primary-soft); color: var(--primary); border-color: var(--primary); }
+.folder-controls { display: flex; align-items: flex-end; flex-wrap: wrap; gap: 14px; margin-bottom: 18px; }
+.folder-controls p { margin: 5px 0 0; }
+.folder-controls label, .folder-upload > label { display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: var(--text-2); }
+.folder-upload { display: flex; flex-direction: column; gap: 16px; margin-bottom: 18px; border-style: dashed; }
+.folder-upload.is-dragging { border-color: var(--primary); background: var(--primary-soft); }
+.folder-upload p { margin: 5px 0 12px; }
+.folder-upload .input { width: 100%; }
+.folder-selected { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; padding: 10px; border-radius: 8px; background: var(--nav); }
+.folder-selected strong { overflow-wrap: anywhere; }
+.folder-file-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 16px; }
+.folder-file-card { display: flex; flex-direction: column; min-width: 0; padding: 16px; }
+.folder-file-card h2 { margin: 12px 0 8px; font-size: 15px; overflow-wrap: anywhere; }
+.folder-image-button { height: 150px; width: 100%; padding: 0; overflow: hidden; border-radius: 8px; border: 1px solid var(--border); background: var(--nav); }
+.folder-image-button img { width: 100%; height: 100%; object-fit: contain; }
+.folder-file-icon { display: grid; place-items: center; height: 110px; background: var(--nav); border-radius: 8px; font-size: 40px; color: var(--primary); }
+.folder-file-code { display: flex; gap: 8px; align-items: center; margin: 0 0 10px; }
+.folder-file-code code { font-size: 11px; overflow-wrap: anywhere; color: var(--text-2); }
+.folder-file-description { white-space: pre-wrap; overflow-wrap: anywhere; }
+.folder-file-actions { display: flex; gap: 8px; margin-top: auto; padding-top: 14px; flex-wrap: wrap; }
+.folder-pagination { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 18px; }
+.folder-preview { width: min(960px, calc(100vw - 24px)); max-height: 92dvh; overflow: auto; }
+.folder-preview h2 { font-size: 18px; overflow-wrap: anywhere; }
+.folder-preview > img { display: block; max-width: 100%; max-height: 70dvh; object-fit: contain; margin: 14px auto; }
+.folders-page .alert .btn { margin-left: 8px; }
+.folders-page button:focus-visible, .folders-page input:focus-visible, .folders-page select:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+@media (max-width: 560px) {
+  .folder-controls label { flex: 1 1 100%; }
+  .folder-controls .input { width: 100%; min-width: 0; }
+  .folder-upload input[type="file"] { max-width: 100%; }
+  .folder-upload > .row { flex-wrap: wrap; }
+  .folder-file-grid { grid-template-columns: minmax(0, 1fr); }
+}
